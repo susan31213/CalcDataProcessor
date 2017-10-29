@@ -22,12 +22,25 @@ float*** ThreeDArr(int a, int b, int c)
     return A;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
+    if(argc != 2)
+    {
+        printf("***********************************************\n");
+        printf("*                                             *\n");
+        printf("*  This program make Processor's output data  *\n");
+        printf("*  become every float placed according time.  *\n");
+        printf("*  A channel is in a line.                    *\n");
+        printf("*                                             *\n");
+        printf("*          Usage: a.exe <calc file>           *\n");
+        printf("*                                             *\n");
+        printf("***********************************************\n");
+    }
+
     FILE * inf, *outf;
     int frame = 0;
     float ***ptr;
-    inf = fopen("output/01_0.calc", "r");
+    inf = fopen(argv[1], "r");
 
     if(!inf)
     {
@@ -77,7 +90,10 @@ int main()
     }
 
     // output file
-    outf = fopen("output/01_0_1.calc", "w");
+    char outputPath[100] = {};
+    strcpy(outputPath, argv[1]);
+    strcat(outputPath, "A");
+    outf = fopen(outputPath, "w");
     if(!outf)
     {
         printf("File can not create!\n");

@@ -2,18 +2,25 @@
 #include<string.h>
 #include<fstream>
 #include<cstdio>
+#include<cstdlib>
 
 using namespace std;
 
 int BONE_NUM = 59;
 int FLOAT_NUM = 16;
 
-int main()
+int main(int argc, char *argv[])
 {
+    if(argc != 3)
+    {
+        printf("Useage: a.out <raw file> <label file>\n");
+        exit(1);
+    }
+
     FILE *calcFile, *labelFile;
     ofstream fout;
-    calcFile = fopen("1.calc", "r");
-    labelFile = fopen("1.label", "r");
+    calcFile = fopen(argv[1], "r");
+    labelFile = fopen(argv[2], "r");
 
     if(!calcFile)
         cout << "Can't open .calc file!\n";
@@ -47,9 +54,9 @@ int main()
                 times++;
             else
                 times = 0;
-            
+
             char filepath[30] = "output/";
-            char timesStr[2]; 
+            char timesStr[2];
             strcat(filepath, name);
             strcat(filepath, "_");
             sprintf(timesStr, "%d", times);
@@ -102,7 +109,7 @@ int main()
 
         fclose(calcFile);
         fclose(labelFile);
-        
+
     }
     return 0;
 }
