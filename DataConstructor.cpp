@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 
     char buffer[10000];
     char c;
-    int stamp;
+    int stamp = 0, lastStamp = 0;
     int i,j,k;
 
     char* delim = ",";
@@ -66,16 +66,21 @@ int main(int argc, char *argv[])
     frame--;
     fseek(inf, 0, SEEK_SET);
     printf("FRAME: %d", frame);
-    
+     
     // allocate memory
     //ptr = new float[FLOAT_NUM][BONE_NUM][frame];
     ptr = ThreeDArr(FLOAT_NUM, BONE_NUM, frame);
-
+    int interval[frame-1];
 
     // construct data
     for(k=0; k<frame; k++)
     {
+        
         fscanf(inf, "%d", &stamp);
+        if(k>0)
+        {
+            interval[k-1] = stamp-lastStamp;
+        }
         fgets(buffer, sizeof(buffer), inf);
         split = strtok(buffer,delim);
         for(i=0; i<BONE_NUM; i++)
@@ -87,6 +92,11 @@ int main(int argc, char *argv[])
             }
         }
         sscanf(split, ",%f,%f%c", &ptr[k*BONE_NUM*FLOAT_NUM + BONE_NUM * FLOAT_NUM], &ptr[k*BONE_NUM*FLOAT_NUM + BONE_NUM*FLOAT_NUM + 1], &c);
+        
+        if(k != frame-1)
+        {
+            lastStamp = stamp;
+        }
     }
 
     // output file
@@ -99,7 +109,11 @@ int main(int argc, char *argv[])
         printf("File can not create!\n");
         exit(1);
     }
-    fprintf(outf, "BONE\tTYPE\tDATA(%d))\n", frame);
+    fprintf(outf, "BONE\tTYPE\tDATA\n%d ", frame);
+    for(i=0; i<frame-1; i++)
+        fprintf(outf, "%d ", interval[i]);
+    fputs("\n", outf);
+    fflush(outf);
 
     for(i=0; i<BONE_NUM; i++)
         for(j=0; j<FLOAT_NUM; j++)
@@ -109,7 +123,7 @@ int main(int argc, char *argv[])
             {
                 fprintf(outf, "%f", ptr[j][i][k]);
                 if(k!= frame-1)
-                    fprintf(outf, ",");
+                    fprintf(outf, " ");
                 else
                     fprintf(outf,"\n");
                 fflush(outf);
