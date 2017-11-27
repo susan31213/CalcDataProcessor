@@ -13,3 +13,5 @@
 3. Feature Extractor (not finish)
     + Can calculate 13 types of feature, include: Mean,  Variance, Standard Deviation, Integration, Root Mean Square, Zero Cross Rate, Mean Cross Rate, Skewness, Kurtosis, First-three orders of 256-point FFT coefficients, Entropy, Signal Magnitude Area, AR coefficients.  
 	
+## Libraries
++ Need [GSL(GNU Scientific Library)](https://www.gnu.org/software/gsl/) for C++.
