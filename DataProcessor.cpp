@@ -67,6 +67,7 @@ int main(int argc, char *argv[])
 
             output = fopen(filepath, "w");
 
+            int lastStamp = -1;
             while(!feof(calcFile))
             {
                 // check stamp >= start time && <= end time
@@ -80,7 +81,7 @@ int main(int argc, char *argv[])
                     fclose(output);
                     break;
                 }
-                else
+                else if(lastStamp != stamp)
                 {
                     int i, j;
                     char c1, c2;
@@ -101,6 +102,7 @@ int main(int argc, char *argv[])
                     fprintf(output, "%f,%f\n", data[BONE_NUM*FLOAT_NUM], data[BONE_NUM*FLOAT_NUM+1]);
                     //printf("===========LAST2: %f, %f============\n", data[BONE_NUM*FLOAT_NUM], data[BONE_NUM*FLOAT_NUM+1]);
                     fflush(output);
+                    lastStamp = stamp;
                 }
             }
             strcpy(last, name);
