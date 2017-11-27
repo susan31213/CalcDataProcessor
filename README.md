@@ -23,6 +23,8 @@
 		11. **Entropy**
 		12. **Signal Magnitude Area**
 		13. **AR coefficients**
+	+ Usage: `g++ feature.cpp` &nbsp;&nbsp;&nbsp;`a.exe <calcA file>`
+	+ Output:  `XXX.calcAF`  
 	
 ## Libraries
 + Need [GSL(GNU Scientific Library)](https://www.gnu.org/software/gsl/) for C++.
