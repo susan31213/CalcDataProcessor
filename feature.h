@@ -1,11 +1,19 @@
 #include<iostream>
 #include<cmath>
-
+#include<string>
+#include<fstream>
 class Feature
 {
     public:
-        Feature(float arr[], int const num);
+        
+        // Constructor: initaillize with data array and size 
+        Feature(double arr[], double time[],int const num);
+        ~Feature();
+
+        // Return size of array
         int Size();
+
+        // Statistics function
         float Mean();
         float Var();
         float StdDev();
@@ -16,12 +24,13 @@ class Feature
         float Skew();
         float Kurt();
         float FFT(int order);
-        float Entropy();
+        float Entropy(int divide);
         float SMA();
-        float AR(int argu);
+        float AR(double order);
 
     private:
-        float* vector;
+        double* vector;
+        double* interval;
         int size;
 
 };
