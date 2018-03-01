@@ -2,6 +2,9 @@
 #include<cmath>
 #include<string>
 #include<fstream>
+#include<gsl/gsl_statistics.h>
+#include<gsl/gsl_blas.h>
+
 class Feature
 {
     public:
