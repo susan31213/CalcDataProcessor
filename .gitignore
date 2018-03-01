@@ -6,3 +6,4 @@ feature
 output/*.calc
 output/*.calcA
 output/*.calcF
+output/*.calcAF
