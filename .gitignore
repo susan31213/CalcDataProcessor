@@ -5,4 +5,4 @@ feature
 *.label
 output/*.calc
 output/*.calcA
-output/*.calcAF
+output/*.calcF
