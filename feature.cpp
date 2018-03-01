@@ -301,13 +301,13 @@ int main(int argc, char** argv)
     else
     {
         
-        ifstream fin(/*argv[1]*/"output/01_1.calcA");
+        ifstream fin(argv[1]);
         if(!fin)
         {
             cout << "Can't open file!" << endl;
             exit(1);
         }
-        string path(/*argv[1]*/"output/01_1.calcA");
+        string path(argv[1]);
         path += "F";
         ofstream fout(path.c_str());
         if(!fout)
@@ -340,13 +340,13 @@ int main(int argc, char** argv)
             }
 			cout << "FINISH GET " << i << "th data ..." << endl;
 
-			//fout << f.Mean() << " " << f.Var() << " " << f.StdDev() << " " << f.Integ() << " "
-            //     << f.RMS() << " " << f.ZCR() << " " << f.MCR() << " " << f.Skew() << " "
-            //     << f.Kurt() << " " << f.FFT(0) << " " << f.Entropy(10) << " " << f.SMA() << " ";
+			fout << f.Mean() << " " << f.Var() << " " << f.StdDev() << " " << f.Integ() << " "
+                 << f.RMS() << " " << f.ZCR() << " " << f.MCR() << " " << f.Skew() << " "
+                 << f.Kurt() << " " << f.FFT(0) << " " << f.Entropy(10) << " " << f.SMA() << " ";
 			int order = (frame < 10)? frame-1 : 10;
             for(int k=1; k<order; k++)
-                cout << f.AR(k) << " ";
-            cout << endl;
+                fout << f.AR(k) << " ";
+            fout << endl;
             fout.flush();
         }
 
