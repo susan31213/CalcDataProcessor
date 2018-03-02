@@ -1,6 +1,4 @@
 #include "feature.h"
-#include <gsl/gsl_statistics.h>
-#include <gsl/gsl_blas.h>
 
 using namespace std;
 
@@ -26,6 +24,16 @@ Feature::~Feature()
 {
    // free(vector);
    // free(interval);
+}
+
+float Feature::FFTCoff(int index)
+{
+    return (float)fftResult[index];
+}
+
+float Feature::ARCoff(int index)
+{
+    return (float)arResult[index];
 }
 
 float Feature::Mean()
@@ -118,8 +126,21 @@ float Feature::Kurt()
 
 float Feature::FFT(int order)
 {
-    return -999;
+    fftResult = new double[size];
+    for(int i=0; i < size; i++)
+        fftResult[i] = vector[i];
+    //order???
+    gsl_fft_real_wavetable *wave;
+    gsl_fft_real_workspace *work;
 
+    wave = gsl_fft_real_wavetable_alloc(size);
+    work = gsl_fft_real_workspace_alloc(size);
+
+    gsl_fft_real_transform(fftResult, 1, size, wave, work);
+
+    gsl_fft_real_wavetable_free(wave);
+    gsl_fft_real_workspace_free(work);
+    return 0;
 }
 
 float Feature::Entropy(int divide)
@@ -130,12 +151,12 @@ float Feature::Entropy(int divide)
     {
         gsl_vector_set(x, i, vector[i]);
     }
-    
+
     double max, min;
     gsl_vector_minmax(x, &min, &max);
     double slice = (max-min)/divide;
     double probInterval[divide] = {0};
-    
+
 	for(int i=0; i<size; i++)
     {
         for(int j=0; j<divide;j++)
@@ -174,7 +195,7 @@ float Feature::Entropy(int divide)
 
         result += prob * log2(prob);
     }
-    
+
     return (float)-result;
 }
 
@@ -193,7 +214,7 @@ float Feature::SMA()
 float Feature::AR(double order)
 {
     // via Burg method
-
+    arResult = new double[size];
     int i, j;
     x = gsl_matrix_calloc(size, 1);
 	efp = gsl_matrix_alloc(size-1, 1);
@@ -214,7 +235,7 @@ float Feature::AR(double order)
     {
         // Calculate the next order reflection (parcor) coefficient
         front = gsl_matrix_alloc(ebp->size1, ebp->size2);
-        gsl_matrix_memcpy(front, ebp); 
+        gsl_matrix_memcpy(front, ebp);
         gsl_matrix_scale(front, -2);
         double front_ans = 0;
 		int size1 = efp->size1;
@@ -233,7 +254,7 @@ float Feature::AR(double order)
         // Update the forward and backward prediction errors
         tmp = gsl_matrix_alloc(efp->size1-1, 1);
         tmp2 = gsl_matrix_alloc(ebp->size1-1, 1);
-        
+
         ef = gsl_matrix_alloc(efp->size1-1, 1);
         ef2 = gsl_matrix_alloc(ebp->size1-1, 1);
 		int size2 = ef->size1;
@@ -241,7 +262,7 @@ float Feature::AR(double order)
         {
             gsl_matrix_set(ef, j, 0, gsl_matrix_get(efp, j+1, 0));
             gsl_matrix_set(ef2, j, 0, gsl_matrix_get(ebp, j+1, 0));
-        }        
+        }
         gsl_matrix_scale(ef2, k);
         gsl_matrix_add(ef, ef2);
         gsl_matrix_memcpy(tmp, ef);
@@ -281,77 +302,13 @@ float Feature::AR(double order)
         gsl_matrix_free(tmp);
 
     }
-	gsl_matrix_free(x);
-	gsl_matrix_free(efp);
-	gsl_matrix_free(ebp);
-	float ans = (float)gsl_matrix_get(a, 0, order);
-	gsl_matrix_free(a);
-    return ans;
-
-    
-}
-
-int main(int argc, char** argv)
-{
-    if(/*argc != 2*/0)
-    {
-        cout << "Usage: ./feature <*.calcA>" << endl;
-        exit(1);
-    }
-    else
-    {
-        
-        ifstream fin(argv[1]);
-        if(!fin)
-        {
-            cout << "Can't open file!" << endl;
-            exit(1);
-        }
-        string path(argv[1]);
-        path += "F";
-        ofstream fout(path.c_str());
-        if(!fout)
-        {
-            cout << "Can't create file!" << endl;
-            exit(1);
-        }
-        fout << "BONE\tTYPE\tFEATURE" << endl;
-        
-        // Get data
-        string line;
-        int frame;
-        std::getline(fin, line);
-        fin >> frame;
-        double interval[frame-1];
-        for(int i=0; i<frame-1; i++)
-            fin >> interval[i];
-		cout << "FINISH GET FREAM..." << endl;
-        // Calculate feature
-        double input[frame];
-		Feature f(input, interval, frame);
-        for(int i=0; i<59*16; i++)
-        {
-            int boneIdx, floatIdx;
-            fin >> boneIdx >> floatIdx;
-            fout << boneIdx << " " << floatIdx << " ";
-            for(int j=0; j<frame; j++)
-            {
-                fin >> input[j];
-            }
-			cout << "FINISH GET " << i << "th data ..." << endl;
-
-			fout << f.Mean() << " " << f.Var() << " " << f.StdDev() << " " << f.Integ() << " "
-                 << f.RMS() << " " << f.ZCR() << " " << f.MCR() << " " << f.Skew() << " "
-                 << f.Kurt() << " " << f.FFT(0) << " " << f.Entropy(10) << " " << f.SMA() << " ";
-			int order = (frame < 10)? frame-1 : 10;
-            for(int k=1; k<order; k++)
-                fout << f.AR(k) << " ";
-            fout << endl;
-            fout.flush();
-        }
-
-        fin.close();
-        fout.close();
-    }
+    int size3 = a->size2;
+    for(int z=0; z<size3; z++)
+	arResult[z] = gsl_matrix_get(a, 0, z);
+    gsl_matrix_free(x);
+    gsl_matrix_free(efp);
+    gsl_matrix_free(ebp);
     return 0;
+
+
 }

@@ -4,17 +4,19 @@
 #include<fstream>
 #include<gsl/gsl_statistics.h>
 #include<gsl/gsl_blas.h>
+#include <gsl/gsl_fft_real.h>
 
 class Feature
 {
     public:
-        
-        // Constructor: initaillize with data array and size 
+
+        // Constructor: initaillize with data array and size
         Feature(double arr[], double time[],int const num);
         ~Feature();
 
         // Return size of array
-        int Size();
+        float FFTCoff(int);
+	float ARCoff(int);
 
         // Statistics function
         float Mean();
@@ -34,6 +36,8 @@ class Feature
     private:
         double* vector;
         double* interval;
+        double* fftResult;
+	double* arResult;
         int size;
 
 };
