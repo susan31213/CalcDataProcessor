@@ -24,7 +24,7 @@ float*** ThreeDArr(int a, int b, int c)
 
 int main(int argc, char *argv[])
 {
-    if(argc != 2)
+    if(argc !=2)
     {
         printf("***********************************************\n");
         printf("*                                             *\n");
@@ -65,11 +65,11 @@ int main(int argc, char *argv[])
     }
     frame--;
     fseek(inf, 0, SEEK_SET);
-    printf("FRAME: %d", frame);
+    printf("Constructing: %s. FRAME: %d\n", argv[1], frame);
      
     // allocate memory
     //ptr = new float[FLOAT_NUM][BONE_NUM][frame];
-    ptr = ThreeDArr(FLOAT_NUM, BONE_NUM, frame);
+    ptr = ThreeDArr(FLOAT_NUM-10, BONE_NUM, frame);
     int interval[frame-1];
 
     // construct data
@@ -87,11 +87,14 @@ int main(int argc, char *argv[])
         {
             for(j=0; j<FLOAT_NUM; j++)
             {
-                sscanf(split, "%f", &ptr[j][i][k]);
+				float f;
+                sscanf(split, "%f", &f);
+				if(j >= 10) ptr[j-10][i][k] = f;
                 split = strtok(NULL, delim);
             }
         }
-        sscanf(split, ",%f,%f%c", &ptr[k*BONE_NUM*FLOAT_NUM + BONE_NUM * FLOAT_NUM], &ptr[k*BONE_NUM*FLOAT_NUM + BONE_NUM*FLOAT_NUM + 1], &c);
+		float no1, no2;
+        sscanf(split, ",%f,%f%c", &no1, &no2, &c);
         
         if(k != frame-1)
         {
@@ -116,7 +119,7 @@ int main(int argc, char *argv[])
     fflush(outf);
 
     for(i=0; i<BONE_NUM; i++)
-        for(j=0; j<FLOAT_NUM; j++)
+        for(j=0; j<FLOAT_NUM-10; j++)
         {
             fprintf(outf, "%d\t%d\t", i, j);
             for(k=0; k<frame; k++)

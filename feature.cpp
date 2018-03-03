@@ -7,11 +7,13 @@ gsl_matrix *efp;
 gsl_matrix *ebp;
 gsl_matrix *front, *tmp, *tmp2, *ef, *ef2;
 
-Feature::Feature(double arr[], double time[], int num)
+Feature::Feature(double arr[], double time[], int num, double fft[], double ar[])
 {
     vector = arr;
     interval = time;
     size = num;
+	fftResult = fft;
+	arResult = ar;
 //    for(int i=0; i<size; i++)
 //    {
 //        vector[i] = arr[i];
@@ -126,7 +128,6 @@ float Feature::Kurt()
 
 float Feature::FFT(int order)
 {
-    fftResult = new double[size];
     for(int i=0; i < size; i++)
         fftResult[i] = vector[i];
     //order???
@@ -195,7 +196,7 @@ float Feature::Entropy(int divide)
 
         result += prob * log2(prob);
     }
-
+	gsl_vector_free(x);
     return (float)-result;
 }
 
@@ -214,7 +215,6 @@ float Feature::SMA()
 float Feature::AR(double order)
 {
     // via Burg method
-    arResult = new double[size];
     int i, j;
     x = gsl_matrix_calloc(size, 1);
 	efp = gsl_matrix_alloc(size-1, 1);
@@ -304,7 +304,7 @@ float Feature::AR(double order)
     }
     int size3 = a->size2;
     for(int z=0; z<size3; z++)
-	arResult[z] = gsl_matrix_get(a, 0, z);
+		arResult[z] = gsl_matrix_get(a, 0, z);
     gsl_matrix_free(x);
     gsl_matrix_free(efp);
     gsl_matrix_free(ebp);

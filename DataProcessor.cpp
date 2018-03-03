@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
             else
                 times = 0;
 
-            char filepath[30] = "output/";
+            char filepath[60] = "output/";
             char timesStr[2];
             strcat(filepath, name);
             strcat(filepath, "_");
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
                     fclose(output);
                     break;
                 }
-                else if(lastStamp != stamp)
+                else if(/*lastStamp != stamp*/1)
                 {
                     int i, j;
                     char c1, c2;

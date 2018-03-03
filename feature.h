@@ -11,7 +11,7 @@ class Feature
     public:
 
         // Constructor: initaillize with data array and size
-        Feature(double arr[], double time[],int const num);
+        Feature(double[], double[],int const, double[], double[]);
         ~Feature();
 
         // Return size of array
@@ -37,7 +37,7 @@ class Feature
         double* vector;
         double* interval;
         double* fftResult;
-	double* arResult;
+		double* arResult;
         int size;
 
 };
