@@ -19,7 +19,7 @@
 		7. **Mean Cross Rate**
 		8. **Skewness**
 		9. **Kurtosis**
-		10. First-three orders of 256-point FFT coefficients
+		10. **First-three orders of 256-point FFT coefficients**
 		11. **Entropy**
 		12. **Signal Magnitude Area**
 		13. **AR coefficients**
